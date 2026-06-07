@@ -1,0 +1,93 @@
+# Pre-registered parity gate for py-cellAdmix
+# COMMIT THIS BEFORE THE AGENT LOOP BEGINS.
+# These fields are READ-ONLY after the Acceleration Agent starts.
+
+package: py-cellAdmix
+upstream:
+  name: cellAdmix
+  version: "0.1.0"
+  source: GitHub
+  url: https://github.com/KharchenkoLab/cellAdmix
+
+# Multi-output package — each major output gets its own gate.
+# ALL gates must pass for the port to be considered complete.
+algorithm_class: deterministic
+
+# Primary gate (for the main scoring pipeline)
+parity_threshold: 1e-8
+
+# Canonical fixture — small CosMx NSCLC subset bundled with the R package.
+fixture:
+  path: data/fixture_small.rds
+  source: bundled (from cellAdmix example data)
+  description: "Downsampled NSCLC CosMx spatial transcriptomics with molecule coords, cell annotations"
+  expected_shape: [50, null]  # 50 cells, variable genes
+
+# R reference driver
+reference_command: tests/r_reference_driver.R
+
+# RNG seed — both R and Python must set this before calling stochastic functions
+seed: 42
+
+# Multi-output gates
+outputs:
+  # Gate 1: Admixture scores (float vector) — deterministic
+  - name: doublet_scores
+    type: "float vector"
+    location_reference: "$.doublet_scores"
+    location_candidate: "result['doublet_scores']"
+    metric: max_abs_error
+    threshold: 1e-8
+
+  # Gate 2: Contamination probabilities per gene per type (float matrix) — deterministic
+  - name: cont_probs_per_type
+    type: "float matrix"
+    location_reference: "$.cont_probs_per_type"
+    location_candidate: "result['cont_probs_per_type']"
+    metric: max_abs_error
+    threshold: 1e-8
+
+  # Gate 3: CRF factor assignments (integer labels) — clustering
+  - name: crf_factors
+    type: "integer vector"
+    location_reference: "$.crf_factors"
+    location_candidate: "result['crf_factors']"
+    metric: ari
+    threshold: 0.95
+
+  # Gate 4: Cell type adjacency matrix (float matrix) — deterministic
+  - name: cell_type_adjacency
+    type: "float matrix"
+    location_reference: "$.cell_type_adjacency"
+    location_candidate: "result['cell_type_adjacency']"
+    metric: max_abs_error
+    threshold: 1e-8
+
+  # Gate 5: Gene probabilities per type (float matrix) — deterministic
+  - name: gene_prob_per_type
+    type: "float matrix"
+    location_reference: "$.gene_prob_per_type"
+    location_candidate: "result['gene_prob_per_type']"
+    metric: max_abs_error
+    threshold: 1e-8
+
+  # Gate 6: Bridge test p-values (inference)
+  - name: bridge_pvalues
+    type: "p-value matrix"
+    location_reference: "$.bridge_pvalues"
+    location_candidate: "result['bridge_pvalues']"
+    metric: spearman_log10p
+    threshold: 0.90
+
+# Acceleration Agent restrictions
+acceleration:
+  enabled: true
+  max_iterations: 20
+  must_pass_gate: true
+
+# Audit class — fill AFTER the port is done
+audit_class: null
+
+# Provenance
+created_by: rebuildr-agent
+created_at: 2026-06-07

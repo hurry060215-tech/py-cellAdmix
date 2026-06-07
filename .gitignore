@@ -1,0 +1,23 @@
+# Build
+dist/
+build/
+*.egg-info/
+__pycache__/
+*.pyc
+
+# Upstream R clone
+cellAdmix-ref/
+
+# Large fixtures
+data/*.h5ad
+data/*.rds
+data/raw/
+
+# IDE
+.vscode/
+.idea/
+
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
