@@ -2,7 +2,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/pycelladmix.svg)](https://pypi.org/project/pycelladmix/)
 [![PyPI downloads](https://img.shields.io/pypi/dm/pycelladmix.svg)](https://pypi.org/project/pycelladmix/)
-[![Python versions](https://img.shields.io/pypi/pyversions/pycelladmix.svg)](https://pypi.org/project/pycelladmix/)
+[![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Tests](https://img.shields.io/badge/tests-25%20passed-brightgreen.svg)]()
 
