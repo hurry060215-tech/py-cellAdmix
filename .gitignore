@@ -21,3 +21,4 @@ data/raw/
 .pytest_cache/
 .coverage
 htmlcov/
+NMF_*/
